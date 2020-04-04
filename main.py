@@ -12,7 +12,7 @@ import git
 import requests
 from colorlog import ColoredFormatter
 
-from setup import LOGS_PATH, APP_PORT
+from setup import LOGS_PATH, APP_PORT, CHANNEL_ID, TOKEN
 
 # NOTE Git will provide only 6 requests per some time. 403-will be normal for many requests.
 wait_sec = 300
@@ -38,9 +38,9 @@ def send_telegram(text: str):
     :param text: message text
     :return: None
     """
-    token = "1187899533:AAHvwZbRqNXJOvT-8Vq-yHgoWOb8dQC2ua8"
+    token = TOKEN
     url = "https://api.telegram.org/bot"
-    channel_id = '-1001383270620'
+    channel_id = CHANNEL_ID
     url += token
     method = url + "/sendMessage"
 
