@@ -1,0 +1,31 @@
+WARNING:pythonConfig:Directory with name danikdanik20166-gmail.com has already created
+DEBUG:git.cmd:Popen(['git', 'pull'], cwd=/home/danyil/PycharmProjects/devops/danikdanik20166-gmail.com, universal_newlines=False, shell=None, istream=None)
+INFO:pythonConfig:Successfully pulled into danikdanik20166-gmail.com
+DEBUG:docker.utils.config:Trying paths: ['/home/danyil/.docker/config.json', '/home/danyil/.dockercfg']
+DEBUG:docker.utils.config:No config file found
+DEBUG:docker.utils.config:Trying paths: ['/home/danyil/.docker/config.json', '/home/danyil/.dockercfg']
+DEBUG:docker.utils.config:No config file found
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/f7d8b96e8a8f12ff661946e94468acaeb32fde57/json HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/fe3db24cee1c4d005c955cfb0253570e18bb4d32eb7d301dce6ca13982e636aa/stop HTTP/1.1" 204 0
+DEBUG:urllib3.connectionpool:http://localhost:None "DELETE /v1.35/containers/fe3db24cee1c4d005c955cfb0253570e18bb4d32eb7d301dce6ca13982e636aa?v=False&link=False&force=False HTTP/1.1" 204 0
+INFO:pythonConfig:Deleted container <Container: fe3db24cee>
+DEBUG:docker.api.build:Looking for auth config
+DEBUG:docker.api.build:No auth config in memory - loading from filesystem
+DEBUG:docker.utils.config:Trying paths: ['/home/danyil/.docker/config.json', '/home/danyil/.dockercfg']
+DEBUG:docker.utils.config:No config file found
+DEBUG:docker.api.build:Sending auth config ()
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/build?t=f7d8b96e8a8f12ff661946e94468acaeb32fde57&q=False&nocache=False&rm=False&forcerm=False&pull=False HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/images/0324c0dc6a48/json HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/create?name=f7d8b96e8a8f12ff661946e94468acaeb32fde57 HTTP/1.1" 201 90
+DEBUG:urllib3.connectionpool:http://localhost:None "GET /v1.35/containers/f234d4737a7faa10fae3ae2d93300db59d77f65bdb603e96881f079111b2e42b/json HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:http://localhost:None "POST /v1.35/containers/f234d4737a7faa10fae3ae2d93300db59d77f65bdb603e96881f079111b2e42b/start HTTP/1.1" 204 0
+INFO:pythonConfig:Successfully created container
+INFO:pythonConfig:Successfully started container
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.telegram.org:443
+DEBUG:urllib3.connectionpool:https://api.telegram.org:443 "POST /bot1187899533:AAHvwZbRqNXJOvT-8Vq-yHgoWOb8dQC2ua8/sendMessage HTTP/1.1" 200 346
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 0.0.0.0:3333
+DEBUG:urllib3.connectionpool:http://0.0.0.0:3333 "GET / HTTP/1.1" 200 17
+INFO:pythonConfig:Check the response from app
+INFO:pythonConfig:<Response [200]>
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.telegram.org:443
+DEBUG:urllib3.connectionpool:https://api.telegram.org:443 "POST /bot1187899533:AAHvwZbRqNXJOvT-8Vq-yHgoWOb8dQC2ua8/sendMessage HTTP/1.1" 200 293

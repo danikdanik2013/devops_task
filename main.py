@@ -8,10 +8,10 @@ import docker
 import git
 
 from setup import APP_PORT
-from setup_logs import log
-from start_proc import before_start
-from telegram import send_telegram
-from tests import simple_test
+from utils.setup_logs import log
+from utils.start_proc import before_start
+from utils.telegram import send_telegram
+from tests.tests import simple_test
 
 # NOTE Git will provide only 6 requests per some time. 403-will be normal for many requests.
 wait_sec = 300
@@ -99,6 +99,7 @@ class Docker:
             if similar:
                 while True:
                     try:
+                        log.warning(f"I Found similar container {similar}")
                         cont_inp = int(
                             input("Enter 1 for deleting container or 2 - for exit from program: "))
                         if cont_inp == 1:

@@ -1,8 +1,8 @@
 import time
 
 import requests
-from setup_logs import log
-from telegram import send_telegram
+from utils.setup_logs import log
+from utils.telegram import send_telegram
 
 
 def simple_test():
