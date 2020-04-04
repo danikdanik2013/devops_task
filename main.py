@@ -8,13 +8,13 @@ import docker
 import git
 
 from setup import APP_PORT
+from tests.tests import simple_test
 from utils.setup_logs import log
 from utils.start_proc import before_start
 from utils.telegram import send_telegram
-from tests.tests import simple_test
 
 # NOTE Git will provide only 6 requests per some time. 403-will be normal for many requests.
-wait_sec = 300
+wait_sec = 30
 
 
 class Github:
@@ -95,29 +95,22 @@ class Docker:
         """
         try:
             tag_name = self.name['commit']['url'].split('/')[-1]
-            similar = self.client.containers.get(tag_name)
+            print(tag_name)
+            similar = self.client.containers.list(filters={"name": tag_name}, all=True)
+            print(similar)
             if similar:
                 while True:
-                    try:
-                        log.warning(f"I Found similar container {similar}")
-                        cont_inp = int(
-                            input("Enter 1 for deleting container or 2 - for exit from program: "))
-                        if cont_inp == 1:
-                            try:
-                                similar.stop()
-                                self.cleanup_cont(cont=similar)
-                                self.cleanup_image(cont=similar, client=self.client)
-                            except Exception as e:
-                                log.error("Something went wrong")
-                                log.error(e)
-                        elif cont_inp == 2:
-                            send_telegram('Build canceled')
-                            sys.exit()
-                        else:
-                            raise ValueError
+                    log.warning(f"Found container with the same name {similar[0]}")
+                    cont_inp = (input("Enter 1 for deleting container or 2 - for exit from program: "))
+                    if cont_inp.isdigit() and int(cont_inp) == 1:
+                        similar[0].stop()
+                        self.cleanup_cont(cont=similar[0])
+                        self.cleanup_image(cont=similar[0], client=self.client)
                         break
-                    except ValueError:
-                        log.warning("That's not valid input")
+                    elif cont_inp.isdigit() and int(cont_inp) == 2:
+                        sys.exit()
+                    else:
+                        log.warning('Its not number')
 
             self.client.images.build(path=self.image, tag=tag_name)
             cont = self.client.containers.run(tag_name, detach=True, name=tag_name, ports={'8080/tcp': APP_PORT})
@@ -127,6 +120,7 @@ class Docker:
                 log.info("Successfully created container")
                 log.info("Successfully started container")
                 send_telegram(f'Successfully build for container with name: {tag_name}')
+                simple_test()
                 return cont
         except Exception as e:
             log.error("Something went wrong at the start of the containers")
@@ -203,7 +197,6 @@ def main():
     client = docker.from_env()
     doc = Docker(client=client, image=path_to_dir, name=get_latest_commit(sys.argv[1].split("/")[-2], dir_name))
     doc.start_contain()
-    simple_test()
     while True:
         old_commit = commit
         commit = get_latest_commit(sys.argv[1].split("/")[-2], dir_name)
@@ -213,7 +206,9 @@ def main():
             log.info(f"last commit: {commit['html_url']}")
             send_telegram(f"Looks like someone upload code to Git")
             github.pull_directory()
+            doc = Docker(client=client, image=path_to_dir, name=get_latest_commit(sys.argv[1].split("/")[-2], dir_name))
             doc.start_contain()
+
         time.sleep(wait_sec)
 
 
@@ -235,4 +230,9 @@ def get_latest_commit(owner: str, repo: str):
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        log.info("\nThanks for using my App.")
+        log.error("Please, do not forget to delete container and image")
+        sys.exit()

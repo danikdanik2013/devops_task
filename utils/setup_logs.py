@@ -8,7 +8,8 @@ from setup import LOGS_PATH
 
 if not LOGS_PATH:
     LOGS_PATH = os.getcwd() + "/logs"
-    os.mkdir(LOGS_PATH)
+    if not os.path.exists(LOGS_PATH):
+        os.mkdir(LOGS_PATH)
 
 
 LOG_LEVEL = logging.DEBUG
