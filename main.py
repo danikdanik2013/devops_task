@@ -1,56 +1,20 @@
 import json
-import logging
 import os
 import sys
 import time
-from datetime import datetime
-from http import HTTPStatus
 from urllib.request import urlopen
 
 import docker
 import git
-import requests
-from colorlog import ColoredFormatter
 
-from setup import LOGS_PATH, APP_PORT, CHANNEL_ID, TOKEN
+from setup import APP_PORT
+from setup_logs import log
+from start_proc import before_start
+from telegram import send_telegram
+from tests import simple_test
 
 # NOTE Git will provide only 6 requests per some time. 403-will be normal for many requests.
 wait_sec = 300
-MIN_PYTHON = (3, 6)
-
-LOG_LEVEL = logging.DEBUG
-LOG_FORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
-logging.root.setLevel(LOG_LEVEL)
-formatter = ColoredFormatter(LOG_FORMAT)
-logging.basicConfig(filename=f'{LOGS_PATH}/{datetime.now()}.log')
-stream = logging.StreamHandler()
-stream.setLevel(LOG_LEVEL)
-stream.setFormatter(formatter)
-log = logging.getLogger('pythonConfig')
-log.setLevel(LOG_LEVEL)
-log.addHandler(stream)
-
-
-def send_telegram(text: str):
-    """
-    Func for sending messages about build to the Telegram channel.
-
-    :param text: message text
-    :return: None
-    """
-    token = TOKEN
-    url = "https://api.telegram.org/bot"
-    channel_id = CHANNEL_ID
-    url += token
-    method = url + "/sendMessage"
-
-    r = requests.post(method, data={
-        "chat_id": channel_id,
-        "text": text
-    })
-
-    if r.status_code != HTTPStatus.OK:
-        raise Exception("post_text error")
 
 
 class Github:
@@ -132,7 +96,6 @@ class Docker:
         try:
             tag_name = self.name['commit']['url'].split('/')[-1]
             similar = self.client.containers.get(tag_name)
-            print(similar)
             if similar:
                 while True:
                     try:
@@ -142,6 +105,7 @@ class Docker:
                             try:
                                 similar.stop()
                                 self.cleanup_cont(cont=similar)
+                                self.cleanup_image(cont=similar, client=self.client)
                             except Exception as e:
                                 log.error("Something went wrong")
                                 log.error(e)
@@ -226,64 +190,6 @@ class Docker:
         else:
             log.error("Something went wrong while cleaning")
             sys.exit()
-
-
-def simple_test():
-    """
-    Func for testing app inside container
-    :return: None
-    """
-    try:
-        s = requests.Session()
-        url = "http://0.0.0.0:3333"
-        # Need some time to up app in container
-        time.sleep(2)
-        response = s.get(url)
-        log.info("Check the response from app")
-        log.info(response)
-        send_telegram(f'Request tests: {response}')
-
-    except Exception as e:
-        log.error("Build fail on tests")
-        log.error(e)
-        send_telegram("Build fail on tests")
-
-
-def root_check():
-    """
-    Func for checking root run
-    :return: None
-    """
-    if not os.geteuid() == 0:
-        sys.exit("\nOnly root can run this script\n")
-
-
-def arg_parse():
-    """
-    Func for check args
-    :return: None
-    """
-    if len(sys.argv) <= 1:
-        sys.exit("\nPlease, enter the directory\n")
-
-
-def python_check():
-    """
-    Func for check version of python. Python must be 3.6+
-    :return: None
-    """
-    if not sys.version_info >= MIN_PYTHON:
-        sys.exit()
-
-
-def before_start():
-    """
-    Manage func for start processes
-    :return:
-    """
-    python_check()
-    root_check()
-    arg_parse()
 
 
 def main():
