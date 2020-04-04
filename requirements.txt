@@ -1,0 +1,15 @@
+certifi==2019.11.28
+chardet==3.0.4
+click==7.1.1
+docker==4.2.0
+gitdb==4.0.2
+GitPython==3.1.0
+idna==2.9
+requests==2.23.0
+six==1.14.0
+smmap==3.0.1
+urllib3==1.25.8
+websocket-client==0.57.0
+colorlog==4.1.0
+notify2==0.3.1
+pyTelegramBotAPI==3.6.7
