@@ -1,5 +1,5 @@
 # Base config for settings
-LOGS_PATH = "./logs"
+LOGS_PATH = ""
 APP_PORT = 3333
-CHANNEL_ID = '-1001383270620'
-TOKEN = "1187899533:AAHvwZbRqNXJOvT-8Vq-yHgoWOb8dQC2ua8"
+CHANNEL_ID = ''
+TOKEN = ""
