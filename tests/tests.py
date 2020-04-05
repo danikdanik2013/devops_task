@@ -1,8 +1,11 @@
 import time
+import unittest
 
 import requests
+
 from utils.setup_logs import log
 from utils.telegram import send_telegram
+from setup import UNITTESTS_PATH
 
 
 def simple_test():
@@ -24,3 +27,21 @@ def simple_test():
         log.error("Build fail on tests")
         log.error(e)
         send_telegram("Build fail on tests")
+
+
+def unittest_run():
+    """
+    Sample function for unittests
+    :return: Result in stdout
+    """
+    if UNITTESTS_PATH:
+        try:
+
+            loader = unittest.TestLoader()
+            start_dir = UNITTESTS_PATH
+            suite = loader.discover(start_dir)
+
+            runner = unittest.TextTestRunner()
+            runner.run(suite)
+        except Exception as e:
+            log.error(e)

@@ -1,5 +1,8 @@
-import sys
 import os
+import sys
+
+from setup import APP_PORT
+
 MIN_PYTHON = (3, 6)
 
 
@@ -10,6 +13,15 @@ def root_check():
     """
     if not os.geteuid() == 0:
         sys.exit("\nOnly root can run this script\n")
+
+
+def check_port():
+    """
+    Func for check port for app
+    :return: None
+    """
+    if not APP_PORT:
+        sys.exit("\nPlease, specify APP_PORT configuration\n")
 
 
 def arg_parse():
@@ -38,3 +50,4 @@ def before_start():
     python_check()
     root_check()
     arg_parse()
+    check_port()
