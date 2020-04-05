@@ -1,9 +1,9 @@
 # Personal CI
-####Must have a dockerfile in the directory
+#### Must have a dockerfile in the directory
 
 #### Please, use Python 3.6+ 
 
-##Setup:
+## Setup:
 
 1) git clone https://github.com/danikdanik2013/devops_task.git
 
