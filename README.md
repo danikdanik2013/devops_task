@@ -11,7 +11,7 @@
 
 3) source myenv/bin/activate
 
-4) pip install -r requirements
+4) pip install -r requirements.txt
 
 5) Create Api token bot for telegram, add this bot to group, give privilege as admin. 
    Add chat id and api to the setup.py file
