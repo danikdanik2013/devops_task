@@ -14,10 +14,14 @@ from utils.start_proc import before_start
 from utils.telegram import send_telegram
 
 # NOTE Git will provide only 6 requests per some time. 403-will be normal for many requests.
-wait_sec = 30
+wait_sec = 300
 
 
 class Github:
+    """
+    class to interact with Gitlab
+    """
+
     def __init__(self, directory: str, path_to_dir: str):
         self.dir = directory
         self.path = path_to_dir
@@ -60,21 +64,15 @@ class Github:
         else:
             log.warning(f"Directory with name {self.dir} has already created")
             while True:
-                try:
-                    cl_input = int(input("Enter 1 for pulling into this directory or 2 - for exit from program: "))
-                    if cl_input == 1:
-                        try:
-                            self.pull_directory()
-                        except Exception as e:
-                            log.error("Something went wrong")
-                            log.error(e)
-                    elif cl_input == 2:
-                        send_telegram('Build canceled')
-                        sys.exit()
-                    else:
-                        raise ValueError
+                cl_input = input("Enter 1 for pulling into this directory or 2 - for exit from program: ")
+                if cl_input.isdigit() and int(cl_input) == 1:
+                    self.pull_directory()
                     break
-                except ValueError:
+
+                elif cl_input.isdigit() and int(cl_input) == 2:
+                    send_telegram('Build canceled by user input')
+                    sys.exit()
+                else:
                     log.warning("That's not valid input")
 
 
@@ -95,12 +93,10 @@ class Docker:
         """
         try:
             tag_name = self.name['commit']['url'].split('/')[-1]
-            print(tag_name)
             similar = self.client.containers.list(filters={"name": tag_name}, all=True)
-            print(similar)
             if similar:
+                log.warning(f"Found container with the same name {similar[0]}")
                 while True:
-                    log.warning(f"Found container with the same name {similar[0]}")
                     cont_inp = (input("Enter 1 for deleting container or 2 - for exit from program: "))
                     if cont_inp.isdigit() and int(cont_inp) == 1:
                         similar[0].stop()
@@ -108,6 +104,7 @@ class Docker:
                         self.cleanup_image(cont=similar[0], client=self.client)
                         break
                     elif cont_inp.isdigit() and int(cont_inp) == 2:
+                        send_telegram('Build canceled by user input')
                         sys.exit()
                     else:
                         log.warning('Its not number')
@@ -234,5 +231,5 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         log.info("\nThanks for using my App.")
-        log.error("Please, do not forget to delete container and image")
+        log.warning("Please, do not forget to delete container and image")
         sys.exit()
