@@ -8,7 +8,7 @@ idna==2.9
 requests==2.23.0
 six==1.14.0
 smmap==3.0.1
-urllib3==1.25.8
+urllib3==1.26.5
 websocket-client==0.57.0
 colorlog==4.1.0
 notify2==0.3.1
